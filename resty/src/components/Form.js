@@ -1,57 +1,66 @@
-import React, { Component } from 'react';
+import React from 'react';
 
-class Form extends Component {
-  constructor() {
-    super();
+
+
+class Form extends React.Component {
+
+  constructor(props) {
+    super(props);
     this.state = {
-      url: '',
-      method: ''
+      method: this.props.defaultMethod,
+      url: this.props.defaultUrl,
+      data: this.props.defaultData,
     }
+
   }
 
-  onChange = (e) => this.setState({ [e.target.name]: e.target.value });
+  setMethod = e => this.setState({ method: e.target.value });
+  setUrl = e => this.setState({ url: e.target.value });
+  setData = e => this.setState({ data: e.target.value });
 
-  handleClick = (e) => {
-    e.preventDefault();
-    const method = e.target.value;
-    this.props.Form(this.state.url);
-    this.setState({ method });
-  }
+  sendInput = () => this.props.handleInput(this.state);
 
-  handleSubmit = (e) => {
-    e.preventDefault();
-  }
+  render = () => (
+    <>
+      <section className="form">
 
-  render() {
-    return (
-      <div>
-        <form onSubmit={this.handleSubmit}>
-          <label htmlFor="url">URL: </label>
-          <input
-            type="text"
-            name="url"
-            value={this.state.url}
-            onChange={this.onChange}
-          />
+        <fieldset>
+          <legend>URL</legend>
+          <input data-testid="urlInput" placeholder="http://" defaultValue={this.props.defaultUrl} onChange={this.setUrl} />
+        </fieldset>
 
-          <input
-            type="submit"
-            value="Submit" />
+        <fieldset>
+          <legend>Method</legend>
+          <div>
+            <input type="radio" value="GET" name="method" onChange={this.setMethod}
+              defaultChecked={this.state.method === "GET" ? true : false} />
+            <label htmlFor="GET">GET</label>
 
-        </form>
+
+            <input data-testid="methodInput" type="radio" value="POST" name="method" onChange={this.setMethod} checked={this.state.method === "POST" ? true : false} />
+
+            <label htmlFor="POST">POST</label>
+
+            <input type="radio" value="PUT" name="method" onChange={this.setMethod} checked={this.state.method === 'PUT' ? true : false} />
+            <label htmlFor="PUT">PUT</label>
+
+            <input type="radio" value="DELETE" name="method" onChange={this.setMethod} checked={this.state.method === 'DELETE' ? true : false} />
+            <label htmlFor="DELETE">DELETE</label>
+
+          </div>
+        </fieldset>
+
+        <button data-testid="submit" onClick={this.sendInput}>Go</button>
+
         <br />
-        <p>Method: {this.state.method}</p>
-        <button onClick={this.handleClick} value="GET">GET</button>
-        <button onClick={this.handleClick} value="POST">POST</button>
-        <button onClick={this.handleClick} value="PUT">PUT</button>
-        <button onClick={this.handleClick} value="DELETE">DELETE</button>
-        <ul className='no-bull'>
-          <li>URL: {this.state.url.value} </li>
-        </ul>
-      </div>
-    );
-  }
+
+      </section>
+      <fieldset>
+        <legend>Body</legend>
+        <textarea onChange={this.setData} defaultValue={this.props.defaultData}></textarea>
+      </fieldset>
+    </>
+  );
 }
 
 export default Form;
-
